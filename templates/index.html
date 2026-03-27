@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener | Premium</title>
+  <meta name="description" content="A premium and fast URL shortener tool.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="glass-container">
+    <header class="header">
+      <div class="logo-icon">🔗</div>
+      <h1>Shorten Your Links</h1>
+      <p>Transform your long URLs into clean, shareable links in seconds.</p>
+    </header>
+
+    <form class="shorten-form" action="/short" method="POST">
+      <div class="input-group">
+        <input type="url" name="url" id="url" placeholder="Paste your long URL here..." required>
+        <button type="submit" class="btn-primary">Shorten</button>
+      </div>
+    </form>
+
+    {% if shorted_url %}
+    <div class="result-card appear-animation" id="resultCard">
+      <div class="success-icon">✨</div>
+      <h2>Your link is ready!</h2>
+      <div class="url-display">
+        <a href="{{ shorted_url }}" target="_blank" id="shortUrl">{{ shorted_url }}</a>
+        <button onclick="copyToClipboard()" class="btn-copy" aria-label="Copy to clipboard" title="Copy to clipboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+    </div>
+    
+    <script>
+      function copyToClipboard() {
+        const urlText = document.getElementById("shortUrl").innerText;
+        navigator.clipboard.writeText(urlText).then(() => {
+          const btn = document.querySelector(".btn-copy");
+          const oldHTML = btn.innerHTML;
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          setTimeout(() => { btn.innerHTML = oldHTML; }, 2000);
+        });
+      }
+      
+      // Smooth scroll to results if there is a result card
+      window.onload = function() {
+        const resCard = document.getElementById('resultCard');
+        if (resCard) {
+          resCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    </script>
+    {% endif %}
+  </main>
+</body>
+</html>
